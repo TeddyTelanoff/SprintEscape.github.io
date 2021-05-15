@@ -21,15 +21,23 @@ body {
     color: black;
 }
 
-#sprint-escape {
+#games {
     background-color: #303030;
     color: azure;
     font-size: 50px;
 
-      display: block;
+    display: flex;
+}
+
+#games button {
+    background-color: #303030;
+    color: azure;
+    font-size: 25px;
+
+    display: block;
     margin-left: auto;
     margin-right: auto;
 
-    width: 500px;
-    height: 500px;
+    width: 250px;
+    height: 250px;
 }
