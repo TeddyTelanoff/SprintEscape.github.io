@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Corads B-Day</title>
+		<link rel='icon' href='icon.png' type='icon/x-icon'>
+		<style type='text/css'>
+			body {
+				background-color: #333333;
+			}
+
+			canvas {
+  				display: block;
+				margin-left: auto;
+				margin-right: auto;
+				background-color: #404040;
+			}
+
+			p {
+				text-align: center;
+				color: bisque;
+			}
+
+			a {
+				color: aqua;
+			}
+
+			span {
+				color: cadetblue;
+			}
+		</style>
+	</head>
+	<body>
+		<audio id="theme" src="theme.mp3" loop="true"></audio>
+		<audio id="eat-bad" src="eat_bad.wav"></audio>
+		<audio id="eat-gud" src="eat_gud.wav"></audio>
+		<canvas id='canvas' width='750px' height='750px'></canvas>
+		<p><a href="https://freemusicarchive.org/music/sawsquarenoise/dojokratos/boss-theme">Music</a> by <span>sawsquarenoise</span> provided by the <a href="https://creativecommons.org/licenses/by/4.0/">CCA 4.0 License</a>.</p>
+
+		<script type='text/javascript'>
+			function GenOb()
+			{
+				return {
+					gudness: Math.random(),
+					x: Math.floor(Math.random() * w),
+					y: Math.floor(Math.random() * h) + h,
+				};
+			}
+
+			function GenObs()
+			{
+				for (let i = 0; i < numObs; i++)
+					obs[i] = GenOb();
+			}
+
+			function UpdateObs()
+			{
+				for (let i = 0; i < numObs; i++)
+				{
+					obs[i].y -= 0.75;
+
+					if (obs[i].y <= p.y + 1 && obs[i].y + 1 >= p.y && obs[i].x <= p.x + 1 && obs[i].x + 1 >= p.x)
+					{
+						if (obs[i].gudness > 0.98)
+						{
+							score += 100;
+							obs[i] = GenOb();
+							eatGud.play();
+						}
+						else if (obs[i].gudness > 0.97)
+						{
+							p.dir.y /= 2;
+							clearInterval(loop);
+							loop = setInterval(
+								gameLoop,
+								1000 / (fps * p.dir.y)
+							);
+
+							obs[i] = GenOb();
+							eatGud.play();
+						}
+						else
+						{
+							eatBad.play();
+							Exit();
+						}
+					}
+
+					if (obs[i].y <= -1)
+					{
+						obs[i] = GenOb();
+						score++;
+						if (score % 100 == 0)
+						{
+							p.dir.y += 0.2;
+							clearInterval(loop);
+							loop = setInterval(
+								gameLoop,
+								1000 / (fps * p.dir.y)
+							);
+						}
+					}
+				}
+			}
+
+			function DrawObs()
+			{
+				ctx.fillStyle = '#FF0000';
+				for (let i = 0; i < numObs; i++)
+					ctx.drawImage(obs[i].gudness > 0.98 ? cakeImg : obs[i].gudness > 0.97 ? sadCakeImg : badCakeImg, obs[i].x * bw, obs[i].y * bh, bw, bh);
+			}
+
+			function UpdatePlayer()
+			{
+				p.x += p.dir.x * 0.75;
+				if (p.x >= w)
+					p.x = 0;
+				else if (p.x <0)
+					p.x = w-1;
+			}
+
+			function DrawPlayer()
+			{
+				ctx.fillStyle = '#00FF00';
+				ctx.translate(p.x * bw + bw / 2, p.y * bh + bh / 2);
+				ctx.rotate(Math.PI / 16 * p.dir.x);
+				ctx.fillRect(-bw / 2, -bh / 2, bw, bh);
+				ctx.rotate(-Math.PI / 16 * p.dir.x);
+				ctx.translate(-p.x * bw - bw / 2, -p.y * bh - bh / 2);
+			}
+		</script>
+		<script type='text/javascript'>
+			let canvas = document.getElementById('canvas');
+			var ctx = canvas.getContext('2d');
+
+			let eatGud = document.getElementById('eat-gud');
+			let eatBad = document.getElementById('eat-bad');
+			document.getElementById('theme').play();
+
+			const cakeImg = new Image(), badCakeImg = new Image(), sadCakeImg = new Image();
+			cakeImg.src = "cake.png";
+			badCakeImg.src = "bad_cake.png";
+			sadCakeImg.src = "sad_cake.png";
+			const w = 40, h = 40,
+				bw = canvas.width / w, bh = canvas.height / h,
+			fps = 20,
+			dirs =
+			{
+				37: -1,
+				65: -1,
+				39:  1,
+				68:  1,
+				80: 'p',
+				32: 'p',
+				82: 'r',
+			};
+
+			var paused = false, ded = false,
+				score = 0,
+				p =
+				{
+					x: Math.round(w / 2),
+					y: 15,
+					dir: { x: 0, y: 1 }
+				},
+				obs = [],
+				numObs = Math.floor(w / 2);
+
+			function Start()
+			{ GenObs(); }
+
+			function WaitForStart()
+			{
+				ctx.fillStyle = '#696969';
+				ctx.textAlign = 'center';
+				ctx.textBaseline = 'top';
+				ctx.font = '50px Comic Sans MSB';
+				ctx.fillText('Pick a direction to start...', w / 2 * bw, h / 2 * bh);
+			}
+
+			function Draw()
+			{
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				DrawPlayer();
+				DrawObs();
+
+				ctx.fillStyle = '#696969';
+				ctx.textAlign = 'left';
+				ctx.textBaseline = 'top';
+				ctx.font = '25px Comic Sans MSB';
+				ctx.fillText(`Score: ${score}`, 15, 15);
+
+				if (paused)
+				{
+					ctx.fillStyle = '#141414';
+					ctx.textAlign = 'center';
+					ctx.textBaseline = 'center';
+					ctx.font = '69px Comic Sans MSB';
+					ctx.fillText('Paused', canvas.width/2, canvas.height/2);
+				}
+
+				if (ded)
+				{
+					ctx.fillStyle = '#141414';
+					ctx.textAlign = 'center';
+					ctx.textBaseline = 'center';
+					ctx.font = '69px Comic Sans MSB';
+					ctx.fillText('Press \'r\' to restart...', canvas.width/2, canvas.height/2);
+				}
+			}
+
+			function Update()
+			{
+				UpdatePlayer();
+				UpdateObs();
+			}
+
+			function KeyPressed(e)
+			{
+				if (dirs[e.keyCode] == undefined)
+					return;
+				else if (dirs[e.keyCode] == 'p')
+					paused = !paused;
+				else if (dirs[e.keyCode] == 'r')
+				{
+					Exit();
+					ded = false;
+					score = 0;
+					p = {
+						x: Math.round(w / 2),
+						y: 15,
+						dir: { x: 0, y: 1 }
+					};
+					obs = [];
+					loop = setInterval(
+						gameLoop,
+						1000 / fps
+					);
+					Start();
+				}
+				else
+					p.dir.x = dirs[e.keyCode];
+			}
+
+			function Exit()
+			{ clearInterval(loop); ded = true; }
+
+			Start();
+			var gameLoop = function()
+				{
+					if (!p.dir.x)
+					{
+						Draw();
+						WaitForStart();
+						return;
+					}
+
+					if (!paused)
+						Update();
+					Draw();
+				};
+
+			var loop = setInterval(
+				gameLoop,
+				1000 / fps
+			);
+
+			document.addEventListener('keydown', KeyPressed);
+		</script>
+	</body>
+</html>
