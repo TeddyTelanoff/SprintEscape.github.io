@@ -1,5 +1,7 @@
 body {
     background-color: #404040;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 25px;
 }
 
 #titlebar {
@@ -21,25 +23,38 @@ body {
     color: black;
 }
 
-#games {
-    background-color: #303030;
-    color: azure;
-    font-size: 50px;
+h1 {
+    color: antiquewhite;
+    text-align: center;
+}
 
-    display: flex;
+#games {
+    display: grid;
+    grid-template: 300px / auto auto auto;
+    margin-left: 25%;
+    margin-right: 25%;
 }
 
 #games button {
-    background-color: #303030;
-    color: azure;
+    background-color: #404040;
+    color: burlywood;
+    font-family: 'Courier New', Courier, monospace;
     font-size: 25px;
 
+    border: none;
     display: block;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 15px;
 
     width: 250px;
     height: 250px;
+}
+
+#games button:hover {
+    background-color: #454545;
+    width: 260px;
+    height: 260px;
+    
+    margin: 10px;
 }
 
 #games button img {
