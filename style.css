@@ -1,0 +1,35 @@
+body {
+    background-color: #404040;
+}
+
+#titlebar {
+    overflow: hidden;
+    background-color: #333;
+}
+
+#titlebar a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+#titlebar a:hover {
+    background-color: dimgray;
+    color: black;
+}
+
+#sprint-escape {
+    background-color: #303030;
+    color: azure;
+    font-size: 50px;
+
+      display: block;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 500px;
+    height: 500px;
+}
