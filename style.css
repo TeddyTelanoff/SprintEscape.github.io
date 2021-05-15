@@ -41,3 +41,13 @@ body {
     width: 250px;
     height: 250px;
 }
+
+#games button img {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 15px;
+
+    width: 100px;
+    height: 100px;
+}
