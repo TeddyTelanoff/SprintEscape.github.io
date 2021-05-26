@@ -1,0 +1,35 @@
+body {
+    background-color: #404040;
+}
+
+@font-face {
+    font-family: CascadiaCode;
+    src: url(CascadiaCode.ttf);
+}
+
+#code {
+    background-color: #333333;
+    width: 500px;
+    height: 350px;
+    
+    color: #AAAAAA;
+    font-family: CascadiaCode;
+    font-size: 16px;
+}
+
+#run {
+    background-color: #00EEEE;
+    width: 100px;
+    height: 50px;
+    
+    font-family: CascadiaCode;
+    font-size: 16px;
+}
+
+#run:hover {
+    background-color: #00FFFF;
+    width: 105px;
+    height: 55px;
+    
+    font-size: 17px;
+}
