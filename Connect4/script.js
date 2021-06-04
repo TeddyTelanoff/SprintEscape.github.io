@@ -16,6 +16,8 @@ const PieceColor = {
 	Blue: '#00DDFF',
 };
 
+var turn = Piece.None;
+
 // Make a fixed sized array
 var board = new Array(rows * cols);
 if (Object.seal)
@@ -39,6 +41,9 @@ function draw()
 		selCol = CelSpace(mouseX, blockSize);
 		selRow = CelSpace(mouseY, blockSize);
 	}
+
+	fill(72);
+	rect(selCol * blockSize, 0, blockSize, rows * blockSize, 5);
 	fill(76);
 	square(selCol * blockSize, selRow * blockSize, blockSize, 5);
 
@@ -66,11 +71,19 @@ function mouseReleased()
 	let col = CelSpace(mouseX, blockSize);
 	let row = CelSpace(mouseY, blockSize);
 
-	if (row == selRow && col == selCol)
-	{
-		board[col + row * cols]++;
-		board[col + row * cols] %= Piece.Count;
-	}
+	if (col == selCol)
+		Move(col);
+}
+
+function Move(col)
+{
+	for (let row = rows - 1; row >= 0; row--)
+		if (board[col + row * cols] == Piece.None)
+		{
+			board[col + row * cols] = turn;
+			turn = (++turn + 1) % (Piece.Count - 1) + 1;
+			break;
+		}
 }
 
 function PieceToColor(piece)
