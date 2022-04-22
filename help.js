@@ -3,7 +3,7 @@ window.onload = hmm;
 function hmm() {
     const div = document.createElement('div');
     const rickroll = document.createElement('img');
-    rickroll.src = '/shhh.gif';
+    rickroll.src = 'https://theotel.github.io/shhh.gif';
     rickroll.alt = 'u got rickrolled';
     const text = document.createElement('h1');
     text.innerHTML = 'Get rickrolled, mate!';
